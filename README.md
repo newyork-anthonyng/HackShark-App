@@ -2,6 +2,23 @@
 
 This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
 
+## Setting up db
+We are using Vercel Postgres with [Prisma](https://www.prisma.io/docs) (an ORM for Postgres). [See tutorial here](https://vercel.com/guides/nextjs-prisma-postgres).
+
+Some relevant commands are:
+```
+npm i -g vercel@latest
+vercel env pull .env.local
+# Otherwise, get environment variables from someone on team
+
+npx prisma db push
+npx prisma generate
+# run these commands whenever you update your schema.prisma
+
+npx prisma studio
+# run this to boot up a local GUI of db
+```
+
 ## Getting Started
 
 First, run the development server:

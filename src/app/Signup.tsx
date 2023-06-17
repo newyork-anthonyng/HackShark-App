@@ -3,14 +3,11 @@ import React, { useRef } from "react";
 import { useMachine } from "@xstate/react";
 import machine from "./machine";
 
-// TODO: Use a real API
-const topics = [
-  { id: "1", name: "Science" },
-  { id: "2", name: "Health" },
-  { id: "3", name: "Nature" }
-];
+interface Props {
+  topics: { id: string; title: string }[];
+}
 
-export default function Signup() {
+export default function Signup({ topics }: Props) {
   const emailRef = useRef(null);
   const [state, send] = useMachine(machine, {
     context: {
@@ -59,7 +56,7 @@ export default function Signup() {
               >
                 <option value="">-- Select a topic --</option>
                 {topics.map((topic) => {
-                  return <option key={topic.id}>{topic.name}</option>;
+                  return <option key={topic.id}>{topic.title}</option>;
                 })}
               </select>
               {state.matches("Ready.Topic.Error") && (
