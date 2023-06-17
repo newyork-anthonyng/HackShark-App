@@ -1,7 +1,5 @@
+import Signup from "./Signup";
+
 export default function Home() {
-  return (
-    <div>
-      <h1>HackSharks</h1>
-    </div>
-  )
+  return <Signup />;
 }
