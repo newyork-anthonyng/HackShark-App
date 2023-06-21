@@ -1,6 +1,8 @@
 import prisma from "../../lib/prisma";
 import Signup from "./Signup";
 
+export const revalidate = 60;
+
 async function getData() {
   const topics = await prisma.topic.findMany();
 
