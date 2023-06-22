@@ -28,6 +28,7 @@
     "xstate": "^4.37.2"
   },
   "devDependencies": {
+    "msw": "^1.2.2",
     "prisma": "^4.15.0"
   }
 }
