@@ -1,14 +1,22 @@
 "use client";
-import React, { useRef } from "react";
+import React, { useEffect, useRef } from "react";
 import { useMachine } from "@xstate/react";
 import machine from "./machine";
 
 interface Props {
-  topics: { id: string; title: string }[];
+  topics: { id: number; name: string }[];
 }
 
 export default function Signup({ topics }: Props) {
   const emailRef = useRef(null);
+  const topicMap = useRef(new Map());
+
+  useEffect(() => {
+    for (let i = 0; i < topics.length; i++) {
+      topicMap.current.set(topics[i].name, topics[i].id);
+    }
+  }, []);
+
   const [state, send] = useMachine(machine, {
     context: {
       emailInput: emailRef,
@@ -20,7 +28,13 @@ export default function Signup({ topics }: Props) {
   }
 
   function handleTopicChange(e: React.ChangeEvent<HTMLSelectElement>) {
-    send({ type: "INPUT.TOPIC", data: e.target.value });
+    send({
+      type: "INPUT.TOPIC",
+      data: {
+        name: e.target.value,
+        id: topicMap.current.get(e.target.value)
+      }
+    });
   }
   function handleFormSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
@@ -53,8 +67,9 @@ export default function Signup({ topics }: Props) {
                   value={state.context.topic}
                   onChange={handleTopicChange}
                 >
+                  <option key="" value="">👉 Select a topic</option>
                   {topics.map((topic) => {
-                    return <option key={topic.id}>{topic.title}</option>;
+                    return <option key={topic.id} data-id={topic.id}>{topic.name}</option>;
                   })}
                 </select>
                 {state.matches("Ready.Topic.Error") && (

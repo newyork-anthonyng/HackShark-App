@@ -1,10 +1,27 @@
 import { createMachine, assign } from "xstate";
 
+const BASE_URL = `http://localhost:8000`;
+function createUserApi(email: string, topicId: number) {
+  return fetch(`${BASE_URL}/users/register`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({
+      first_name: "Test",
+      last_name: "User",
+      email,
+      topic_id: topicId
+    }),
+  }).then((res) => res.json());
+}
+
 const machine = createMachine(
   {
     context: {
       email: "",
       topic: "",
+      topicId: 0,
       emailInput: null
     },
     id: "New Machine",
@@ -14,12 +31,13 @@ const machine = createMachine(
       context: {} as {
         email: string;
         topic: string;
+        topicId: number;
         emailInput: React.RefObject<HTMLInputElement> | null;
       },
       events: {} as 
         { type: "SUBMIT" }
         | { type: "INPUT.EMAIL"; data: string }
-        | { type: "INPUT.TOPIC"; data: string }
+        | { type: "INPUT.TOPIC"; data: { id: number; name: string; } }
     },
     states: {
       Ready: {
@@ -138,7 +156,8 @@ const machine = createMachine(
       }),
       cacheTopic: assign((_, event) => {
         return {
-          topic: event.data
+          topic: event.data.name,
+          topicId: event.data.id
         };
       }),
       showValidationError: (context) => {
@@ -166,12 +185,7 @@ const machine = createMachine(
     },
     services: {
       createUser: (context) => {
-        // TODO: Implement API call
-        const { email, topic } = context;
-
-        return new Promise((resolve) => {
-          setTimeout(resolve, 1500);
-        });
+        return createUserApi(context.email, context.topicId)
       }
     }
   }
